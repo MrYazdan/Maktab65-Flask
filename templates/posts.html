@@ -1,0 +1,15 @@
+{% extends "layout/_base.html" %}
+{% block title %}Posts{% endblock %}
+{% block body %}
+    <section>
+    <div class="grid grid-cols-3 gap-16 py-16 px-16 mt-12">
+        {% for post in posts %}
+            <div class="rounded-lg border-8 border-sky-600 p-8">
+                <h2 class="text-center text-stone-600 font-bold border-b-4 pb-6 mb-4">{{ post.title }}</h2>
+                <p class="text-justify text-gray-400 mb-6">{{ post.description[:180] }}</p>
+                <a href="{{ url_for('post', post_id=post.id) }}" class="text-white border-2 border-lime-700 bg-lime-600 py-6 block w-full font-bold text-center rounded-xl">Goto post</a>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
