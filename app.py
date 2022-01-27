@@ -1,4 +1,8 @@
+from fnmatch import translate
+
 from flask import Flask
+from jinja2 import defaults
+
 from views import *
 
 # Configure Flask
@@ -23,5 +27,15 @@ app.add_url_rule('/posts/<int:post_id>', 'post', post)
 app.add_url_rule('/new_post', 'new_post', new_post, methods=['POST', 'GET'])
 app.add_url_rule('/about-us', 'about', about)
 
+# Flask 3:
+app.add_url_rule('/register', 'register', register, methods=['POST', 'GET'])
+app.add_url_rule('/login', 'login', login, methods=['POST', 'GET'])
+app.add_url_rule('/logout', 'logout', logout)
+
+# app.add_url_rule('/translate/<target_lang>', 'translate', translate, defaults={'from_lang': 'auto', 'provider': 'google'}, methods=['POST', 'GET'])
+# app.add_url_rule('/translate/<target_lang>/<from_lang>', 'translate', translate, defaults={'provider': 'google'},
+#                  methods=['POST', 'GET'])
+app.add_url_rule('/translate/<string:target_lang>/<string:from_lang>/<string:provider>', 'translate', translate, methods=['POST', 'GET'])
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0")

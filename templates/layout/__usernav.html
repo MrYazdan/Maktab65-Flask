@@ -1,0 +1,16 @@
+<nav class="w-full text-center overflow-hidden bg-gray-400 ">
+    <div class="grid grid-cols-2 gap-4 max-w-screen-lg mx-auto py-4">
+        <div class="text-left">
+            {% if not user %}
+                <a href="{{ url_for('register') }}" class="mr-2"><i class="gb gb_person_add"></i>Register</a>
+                |
+                <a href="{{ url_for('login') }}" class="ml-2"><i class="gb gb_lock"></i>Login</a>
+            {% else %}
+                <a href="{{ url_for('logout') }}" class="mr-2"><i class="gb gb_power_settings_new"></i></a><span class=""><i class="gb gb_person"></i>Hello {{ user.username }}</span>
+            {% endif %}
+        </div>
+        <div class="text-right">
+            <a href="" class=""><i class="gb gb_shopping_cart"></i>Cart</a>
+        </div>
+    </div>
+</nav>

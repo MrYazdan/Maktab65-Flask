@@ -1,10 +1,17 @@
 from flask import redirect, url_for, request, Response, render_template
+from utils import get_user_id_by_cookie
+users = [
+    {'username': 'admin', 'password': '1', 'bdate': '', 'key': None}
+]
 
 
 # @app.route('/hi')
 def say_hello(name):
+    user_id = get_user_id_by_cookie(request, users)
+    user = users[user_id] if user_id else None
+
     names = request.cookies['name'].split(',') if request.cookies.get('name', None) else []
-    resp = Response(render_template('say_hello.html', name=name, names=names))
+    resp = Response(render_template('say_hello.html', name=name, names=names, user=user))
     if name not in names:
         names.append(name)
         from datetime import datetime as dt
@@ -85,20 +92,32 @@ def handler():
 
 
 def home():
-    return render_template("home.html")
+    user_id = get_user_id_by_cookie(request, users)
+    user = users[user_id] if user_id else None
+
+    return render_template("home.html", user=user)
 
 
 def posts():
-    return render_template("posts.html", posts=post_data)
+    user_id = get_user_id_by_cookie(request, users)
+    user = users[user_id] if user_id else None
+
+    return render_template("posts.html", posts=post_data, user=user)
 
 
 def post(post_id: int):
-    return render_template("post.html", post=post_data[post_id])
+    user_id = get_user_id_by_cookie(request, users)
+    user = users[user_id] if user_id else None
+
+    return render_template("post.html", post=post_data[post_id], user=user)
 
 
 def new_post():
+    user_id = get_user_id_by_cookie(request, users)
+    user = users[user_id] if user_id else None
+
     if request.method == "GET":
-        return render_template("new_post.html")
+        return render_template("new_post.html", user=user)
 
     elif request.method == "POST":
         title = request.form.get('title')
@@ -112,4 +131,72 @@ def new_post():
 
 
 def about():
-    return render_template("about.html")
+    user_id = get_user_id_by_cookie(request, users)
+    user = users[user_id] if user_id else None
+
+    return render_template("about.html", user=user)
+
+
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    elif request.method == "POST":
+        # get form inputs!
+        username = request.form.get('username', None)
+        password = request.form.get('password', None)
+
+        # auth
+        for user in users:
+            if user['username'] == username and user['password'] == password:
+                # login!!!
+                from uuid import uuid4
+                user['key'] = uuid4().hex
+
+                res = Response("login successfully")
+                res.set_cookie("user_id", str(users.index(user)))
+                res.set_cookie("login_key", user['key'])
+
+                return res
+
+        return "Username or password incorrect"
+
+
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+    elif request.method == "POST":
+        username = request.form.get('username')
+
+        for user in users:
+            if user['username'] == username:
+                return "this user is exists!"
+
+        users.append({
+            'username': username,
+            'password': request.form.get('password'),
+            'bdate': request.form.get('bdate'),
+            'key': None
+        })
+
+        print(users)
+        return "This user registered!"
+
+
+def logout():
+    resp = Response('Logout successfully')
+    resp.delete_cookie('user_id')
+    resp.delete_cookie('login_key')
+    return resp
+
+
+def translate(target_lang, from_lang, provider):
+    import translators as ts
+
+    if request.method == "GET":
+        return 'HELLO FROM TRANSLATOR'
+    elif request.method == "POST":
+        text = request.form.get('text')
+        print(provider)
+        translated_text = getattr(ts, provider)(text, to_language=target_lang, from_language=from_lang)
+        print(translated_text)
+        return translated_text
