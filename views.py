@@ -1,9 +1,16 @@
 from flask import redirect, url_for, request, Response, render_template
 
 
-# @app.route('/hello')
+# @app.route('/hi')
 def say_hello(name):
-    return f"<center><h1 style='color: orangered'>Hi {name} ^_^</h1></center>"
+    names = request.cookies['name'].split(',') if request.cookies.get('name', None) else []
+    resp = Response(render_template('say_hello.html', name=name, names=names))
+    if name not in names:
+        names.append(name)
+        from datetime import datetime as dt
+        from datetime import timedelta as td
+        resp.set_cookie("name", ",".join(names), expires=dt.utcnow() + td(minutes=30))
+    return resp
 
 
 # @app.route('/hi?name=alireza')

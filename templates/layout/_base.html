@@ -2,11 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}{% endblock %} - Maktab 65</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>{% block title %}Base title{% endblock %} - Maktab 65</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='gorbeh/css/gorbeh-icons.min.css') }}">
+    <script src="{{ url_for('static', filename='js/tailwind.js') }}"></script>
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
 {% include "layout/__nav.html" %}
-{% block body %}{% endblock %}
+{% block body %}
+    <h1 class="text-center mt-20"><i class="gb gb_aparat text-8xl gb_color_red"></i></h1>
+{% endblock %}
+{% block extra_footer %}{% endblock %}
 </body>
 </html>

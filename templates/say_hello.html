@@ -1,0 +1,13 @@
+{% extends "layout/_base.html" %}
+{% block title %}Hi {{ name }}{% endblock %}
+{% block body %}
+    <section class="mt-20">
+        <h1 class="text-center text-5xl" style='color: orangered'>Hi {{ name }} ^_^</h1>
+        <hr class="my-8">
+        <ul style="list-style-type: none;">
+            {% for n in names %}
+                <li class="text-sky-500 text-3xl"><i class="gb gb_account_box mr-1"><i class="relative left-1 -top-1 font-bold">{{ n }}</i></i></li>
+            {% endfor %}
+        </ul>
+    </section>
+{% endblock %}
